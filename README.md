@@ -115,7 +115,7 @@ $ mix local.rebar
 * creating .asdf/installs/elixir/1.12-otp-23/.mix/rebar3
 ```
 
-Instalamos el archive de phoenix:
+Instalamos el archive installer de phoenix, el cual es usado para generar la estructura base del proyecto:
 
 ```shell
 $ mix archive.install hex phx_new 1.5.9
@@ -140,3 +140,4 @@ Leer las siguientes referencias adicionales para complementar la guía:
 
  * [asdf](https://asdf-vm.com/)
  * [Install Elixir using asdf](https://thinkingelixir.com/install-elixir-using-asdf/)
+ * [Phoenix Framework](https://www.phoenixframework.org/)
