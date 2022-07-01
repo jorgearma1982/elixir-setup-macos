@@ -118,22 +118,96 @@ $ mix local.rebar
 Instalamos el archive installer de phoenix, el cual es usado para generar la estructura base del proyecto:
 
 ```shell
-$ mix archive.install hex phx_new 1.5.9
-
+$ mix archive.install hex phx_new
 Resolving Hex dependencies...
 Dependency resolution completed:
 New:
-  phx_new 1.5.9
+  phx_new 1.6.10
 * Getting phx_new (Hex package)
 All dependencies are up to date
-Compiling 10 files (.ex)
+Compiling 11 files (.ex)
 Generated phx_new app
-Generated archive "phx_new-1.5.9.ez" with MIX_ENV=prod
+Generated archive "phx_new-1.6.10.ez" with MIX_ENV=prod
 ```
 
 ```shell
-$ mix phx.new src --app hello
+$ mix phx.new src --app hello --no-ecto
+* creating src/config/config.exs
+* creating src/config/dev.exs
+* creating src/config/prod.exs
+* creating src/config/runtime.exs
+* creating src/config/test.exs
+* creating src/lib/hello/application.ex
+* creating src/lib/hello.ex
+* creating src/lib/hello_web/views/error_helpers.ex
+* creating src/lib/hello_web/views/error_view.ex
+* creating src/lib/hello_web/endpoint.ex
+* creating src/lib/hello_web/router.ex
+* creating src/lib/hello_web/telemetry.ex
+* creating src/lib/hello_web.ex
+* creating src/mix.exs
+* creating src/README.md
+* creating src/.formatter.exs
+* creating src/.gitignore
+* creating src/test/support/conn_case.ex
+* creating src/test/test_helper.exs
+* creating src/test/hello_web/views/error_view_test.exs
+* creating src/lib/hello_web/controllers/page_controller.ex
+* creating src/lib/hello_web/views/page_view.ex
+* creating src/test/hello_web/controllers/page_controller_test.exs
+* creating src/test/hello_web/views/page_view_test.exs
+* creating src/assets/vendor/topbar.js
+* creating src/lib/hello_web/templates/layout/root.html.heex
+* creating src/lib/hello_web/templates/layout/app.html.heex
+* creating src/lib/hello_web/templates/layout/live.html.heex
+* creating src/lib/hello_web/views/layout_view.ex
+* creating src/lib/hello_web/templates/page/index.html.heex
+* creating src/test/hello_web/views/layout_view_test.exs
+* creating src/lib/hello/mailer.ex
+* creating src/lib/hello_web/gettext.ex
+* creating src/priv/gettext/en/LC_MESSAGES/errors.po
+* creating src/priv/gettext/errors.pot
+* creating src/assets/css/phoenix.css
+* creating src/assets/css/app.css
+* creating src/assets/js/app.js
+* creating src/priv/static/robots.txt
+* creating src/priv/static/images/phoenix.png
+* creating src/priv/static/favicon.ico
+
+Fetch and install dependencies? [Yn] y
+* running mix deps.get
+* running mix deps.compile
+
+We are almost there! The following steps are missing:
+
+    $ cd src
+
+Start your Phoenix app with:
+
+    $ mix phx.server
+
+You can also run your app inside IEx (Interactive Elixir) as:
+
+    $ iex -S mix phx.server
+
 ```
+
+Y listo, ahora el código base se encuentra en el directorio `src`, echemos un vistazo:
+
+Corremos el servidor phoenix en local:
+
+```shell
+$ mix phx.server
+Compiling 13 files (.ex)
+Generated hello app
+[info] Running HelloWeb.Endpoint with cowboy 2.9.0 at 127.0.0.1:4000 (http)
+[debug] Downloading esbuild from https://registry.npmjs.org/esbuild-darwin-arm64/-/esbuild-darwin-arm64-0.14.29.tgz
+[info] Access HelloWeb.Endpoint at http://localhost:4000
+[watch] build finished, watching for changes...
+```
+
+Ahora puedes apuntar tu navegador a `https://localhost:4000`.
+
 ## Referencias
 
 Leer las siguientes referencias adicionales para complementar la guía:
@@ -141,3 +215,4 @@ Leer las siguientes referencias adicionales para complementar la guía:
  * [asdf](https://asdf-vm.com/)
  * [Install Elixir using asdf](https://thinkingelixir.com/install-elixir-using-asdf/)
  * [Phoenix Framework](https://www.phoenixframework.org/)
+ * [Phoenix Up and running](https://hexdocs.pm/phoenix/up_and_running.html)
