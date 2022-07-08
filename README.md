@@ -2,21 +2,44 @@
 
 ## Introducción
 
-Paso a paso para preparar un ambiente de desarrollo en macos para elixir.
+Como ingenieros de infraestructura cada vez es más común participar en proyectos entrega de software en donde
+el desarrollo se basa en el lenguaje de programación `Elixir`, el cual se basa en la máquina virtual de `Erlang`,
+es decir, la `BEAM`.
 
-## Instalación asdf
+En esta guía mostramos como construir proyectos basados en Elixir y Phoenix. Iremos desde lo más básico que es
+instalar las dependencias del sistema para poder crear nuestros proyectos, usaremos el manejador de paquetes
+`asdf` para simplificar el manejo de las versiones de `erlang` y `elixir` que vamos a necesitar.
 
-```shell
-$ brew install coreutilsgit curl unzip
+En los ejercicios que realicemos usaremos Elixir `12` con Erlang/OTP `23`.
+
+### Objetivos
+
+El principal interés es que los ingenieros de infraestructura aprendan los principios para construir proyectos
+basados en Elixir y que sea más sencillo participar en un proyecto de desarrollo basado en Elixir, al final
+esperamos:
+
+* Aprender a instalar Erlang y Elixir en modo binario
+* Aprender a crear proyectos basados en Elixir y el framework Phoenix
+* Aprender a modificar las configuraciones de un proyecto elixir
+* Aprender a hacer liberaciones de proyectos basados en elixir
+
+## Instalación del manejador de paquetes asdf
+
+Instalaremos algunas dependencias de sistema para hacer nuestro trabajo:
+
+``` shell
+$ brew install coreutils git curl unzip
 ```
 
-```shell
+Ahora si instalamos asdf con brew:
+
+``` shell
 $ brew install asdf
 ```
 
-Agregar `asdf` al arranque del shell:
+Agregamos `asdf` al arranque del shell:
 
-```shell
+``` shell
 $ vim $HOME/.zshrc
 ```
 
@@ -29,36 +52,36 @@ Al final agregamos:
 
 Recargamos el shell:
 
-```shell
+``` shell
 $ source $HOME/.zshrc
 ```
 
 Verificamos la instalación de `asdf`:
 
-```shell
+``` shell
 $ asdf --version
 v0.10.2
 ```
 
+## Instalando los plugins para erlang y elixir
+
 Agregamos los plugins para `erlang` y `elixir`:
 
-```shell
+``` shell
 $ asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
 $ asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
 ```
 
-Instalamos los plugins para `erlang` y lo configuramos para el proyecto local:
+Instalamos los plugins para `erlang` en su versión mayor `23` y la versión menor `3`:
 
-```shell
+``` shell
 $ asdf install erlang 23.3
-$ asdf local erlang 23.3
 ```
 
-Instalamos los plugins para `elixir` y lo configuramos para el proyecto local:
+Instalamos los plugins para `elixir` en versión mayor `1`, versión menor `12` y compatibilidad con erlang/otp `23`:
 
 ```shell
 $ asdf install elixir 1.12-otp-23
-$ asdf local elixir 1.12-otp-23
 ```
 
 Verificamos la instalación de elixir:
@@ -70,16 +93,20 @@ Erlang/OTP 23 [erts-11.2] [source] [64-bit] [smp:8:8] [ds:8:8:10] [async-threads
 Elixir 1.12.3 (compiled with Erlang/OTP 23)
 ```
 
-## Creando proyecto phoenix
+Como se puede ver en la salida, nos muestra que la versión de elixir coincide con la versión de OTP 23.
 
-Creamos un directorio de trabajo para el nuevo proyecto:
+## Creando el proyecto phoenix
+
+Ahora que tenemos todos los requisitos listos en nuestra máquina, creamos un directorio de trabajo
+para el nuevo proyecto:
 
 ```shell
-$ mkdir $HOME/elixir-dev
-$ cd $HOME/elixir-dev
+$ mkdir -p $HOME/code/elixir-dev
+$ cd $HOME/code/elixir-dev
 ```
 
-Configuramos la versión de `erlang` para el proyecto local:
+Ahora, los siguientes comandos se deben realizar dentro del directorio del nuevo proyecto. Configuramos
+la versión de `erlang` para el proyecto local:
 
 ```shell
 $ asdf local erlang 23.3
@@ -91,7 +118,7 @@ Configuramos la versión de `elixir` para el proyecto local:
 $ asdf local elixir 1.12-otp-23
 ```
 
-Esto nos crea el archivo:
+Esto nos crea el archivo `.tool-versions`:
 
 ```shell
 $ cat .tool-versions
@@ -129,6 +156,9 @@ Compiling 11 files (.ex)
 Generated phx_new app
 Generated archive "phx_new-1.6.10.ez" with MIX_ENV=prod
 ```
+
+Generamos un proyecto phoenix en el directorio `src`, la aplicación del proyecto se llama `hello` y desactivamos
+el uso de `ecto` ya que de inicio no usaremos bases de datos:
 
 ```shell
 $ mix phx.new src --app hello --no-ecto
@@ -192,11 +222,18 @@ You can also run your app inside IEx (Interactive Elixir) as:
 
 ```
 
-Y listo, ahora el código base se encuentra en el directorio `src`, echemos un vistazo:
+Y listo!!!, ahora el código base se encuentra en el directorio `src`, echemos un vistazo.
+
+Nos cambiamos al directorio `src`:
+
+```shell
+$ cd src
+```
 
 Corremos el servidor phoenix en local:
 
 ```shell
+$ cd src
 $ mix phx.server
 Compiling 13 files (.ex)
 Generated hello app
@@ -208,11 +245,52 @@ Generated hello app
 
 Ahora puedes apuntar tu navegador a `https://localhost:4000`.
 
+Verifica que en la salida estándar del servidor phoenix se registran las peticiones realizadas.
+
+Felicidades acabas de crear tu primer proyecto en elixir.
+
+Si quieres ver un dashboard de la operación de Elixir vea al url: `http://localhost:4000/dashboard/home`.
+
+### Modificando el HTML de la página index
+
+Ahora que tenemos nuestro primer proyecto corriendo, aconsejo dejar ahí el servidor corriendo en primer plano
+para estar viendo como llegan las peticiones al servidor web que se levanta en el puerto `4000`.
+
+Editaremos el archivo `lib/hello_web/templates/page/index.html.heex`:
+
+``` shell
+$ vim lib/hello_web/templates/page/index.html.heex
+```
+
+En la segunda línea vemos el mensaje de bienvenida, cambiamos de `Phoenix`:
+
+```
+    <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
+```
+
+Por algo así:
+
+```
+    <h1><%= gettext "Welcome to %{name}!", name: "My World" %></h1>
+```
+
+Veras que en cuanto guardas el archivo, el servidor phoenix detecta el cambio en caliente y refresca la vista.
+
+## Cambiando las configuraciones
+
+TODO.
+
+## Haciendo liberaciones
+
+TODO.
+
 ## Referencias
 
 Leer las siguientes referencias adicionales para complementar la guía:
 
- * [asdf](https://asdf-vm.com/)
- * [Install Elixir using asdf](https://thinkingelixir.com/install-elixir-using-asdf/)
- * [Phoenix Framework](https://www.phoenixframework.org/)
- * [Phoenix Up and running](https://hexdocs.pm/phoenix/up_and_running.html)
+* [Brew - The Missing Package Manager for macOS (or Linux)](https://brew.sh/)
+* [asdf - Manage multiple runtime versions with a single CLI tool](https://asdf-vm.com/)
+* [Install Elixir using asdf](https://thinkingelixir.com/install-elixir-using-asdf/)
+* [Phoenix Framework](https://www.phoenixframework.org/)
+* [Phoenix Up and running](https://hexdocs.pm/phoenix/up_and_running.html)
+* [Elixir - Compatibility and Deprecations](https://hexdocs.pm/elixir/1.12.3/compatibility-and-deprecations.html)
