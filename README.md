@@ -276,7 +276,51 @@ Por algo así:
 
 Veras que en cuanto guardas el archivo, el servidor phoenix detecta el cambio en caliente y refresca la vista.
 
-## Cambiando las configuraciones
+## Cambiando las configuraciones para tiempo de construcción
+
+Ahora veremos un ejercicio en donde hacemos un poco más dinámica la página del indice de nuestra aplicación,
+cambiaremos un mensaje de su forma estática a una forma donde obtiene el valor desde un archivo de configuración
+en la aplicación.
+
+Volvemos a modificar la página de indice y agregamos la siguiente línea:
+
+```
+<p>Message from: <strong><%= Application.fetch_env!(:hello, :myconfig) %></strong></p>
+```
+
+En el archivo de configuración tiempo de construcción agregamos una llave y su valor:
+
+```
+config :hello, myconfig: "config!"
+```
+
+Guardamos la configuración, terminamos el servidor phoenix y lo volvemos a ejecutar para que reconstruya el
+proyecto y verifiquemos si se refleja el cambio, deberíamos ver el mensaje:
+
+```
+Message from: config!
+```
+
+Ahora definimos la llave en el archivo de configuración de desarrollo `config/dev.exs`:
+
+```
+config :hello, myconfig: "dev!"
+```
+
+Guardamos la configuración y detenemos el servidor phoenix, después volvemos a ejecutarlo para que se construya
+la nueva configuración, deberíamos ver el mensaje:
+
+```
+Message from: dev!
+```
+
+Como podemos ver, las configuraciones y sus valores para construir el proyecto se pueden definir en el archivo
+`config/config.exs`, esto aplica de forma general, este archivo es leído antes de que compilamos nuestra aplicación
+, incluso antes de cargar nuestras dependencias, esto ayuda a definir como vamos a compilar el proyecto.
+
+Si se quiere definir un parámetro especifico para el ambiente de desarrollo se debe definir en `config/dev.exs`.
+
+## Cambiando las configuraciones para tiempo de ejecución
 
 TODO.
 
