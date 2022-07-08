@@ -338,3 +338,4 @@ Leer las siguientes referencias adicionales para complementar la guía:
 * [Phoenix Framework](https://www.phoenixframework.org/)
 * [Phoenix Up and running](https://hexdocs.pm/phoenix/up_and_running.html)
 * [Elixir - Compatibility and Deprecations](https://hexdocs.pm/elixir/1.12.3/compatibility-and-deprecations.html)
+* [Staknine - Elixir Config and Environment Variables](https://staknine.com/elixir-config-environment-variables/)
