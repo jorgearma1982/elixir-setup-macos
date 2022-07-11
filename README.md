@@ -25,11 +25,13 @@ esperamos:
 
 ## Requisitos
 
-Para poder realizar estos ejercicios es necesario que una instancia del servidor de bases de datos Postgres,
+Para poder realizar estos ejercicios es necesario tener una instancia del servidor de bases de datos Postgres,
 en MacOS puede ser instalado a través de la aplicación `Postgres.app`, con esta aplicación podrá crear
 diferentes instancias de bases de datos en diferentes versiones, lo cual facilita el desarrollo.
 
-Otra forma práctica de levantar un servidor de base de datos es a través de contenedores docker..
+Otra forma práctica de levantar un servidor de base de datos es a través de contenedores docker.
+
+Para estos ejercicios usaremos Postgres versión `12`.
 
 ## Instalación del manejador de paquetes asdf
 
