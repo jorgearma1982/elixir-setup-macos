@@ -55,7 +55,7 @@ $ vim $HOME/.zshrc
 
 Al final agregamos:
 
-```
+``` shell
 # load asdf
 . /opt/homebrew/opt/asdf/libexec/asdf.sh
 ```
@@ -231,10 +231,11 @@ Nos cambiamos al directorio `src` donde realizaremos las tareas:
 $ cd src
 ```
 
-Antes que cualquier cosa, debemos desactivar la visualización de errores en modo debug en formato HTML, para esto
-editamos `config/dev.exs` y en el `Endpoint` de `HelloWeb` cambiamos la llave `debug_errors` a `false, por ejemplo:
+Ya que nuestra aplicación será una API, debemos desactivar la visualización de errores en modo debug en formato HTML,
+para esto editamos `config/dev.exs` y en el `Endpoint` de `HelloWeb` cambiamos la llave `debug_errors` a `false`,
+por ejemplo:
 
-```
+``` elixir
 config :hello, HelloWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
@@ -249,7 +250,7 @@ config :hello, HelloWeb.Endpoint,
 Ahora editamos del archivo `config/dev.exs` para revisar la configuración a la base de datos, esta es
 definida en el `Repo`, por ejemplo:
 
-```
+``` elixir
 # Configure your database
 config :hello, Hello.Repo,
   username: "postgres",
@@ -318,7 +319,7 @@ Ahora puedes apuntar tu navegador a `https://localhost:4000`.
 
 Deberás de visualizar un error como el siguiente:
 
-```
+``` html
 {"errors":{"detail":"Not Found"}}
 ```
 
@@ -337,7 +338,7 @@ $ vim lib/hello_web/router.ex
 
 Después de el pipeline `:api` y el scope `/api` definimos el el scope `/`:
 
-```
+``` elixir
   scope "/", HelloWeb do
     pipe_through :api
     get "/", IndexController, :index
@@ -354,7 +355,7 @@ $ vim lib/hello_web/controllers/index_controller.ex
 
 El contenido sería algo así:
 
-```
+``` elixir
 defmodule HelloWeb.IndexController do
   use HelloWeb, :controller
 
@@ -367,20 +368,20 @@ end
 Ahora recargamos el navegador para volver a lanzar la petición, deberíamos de recibir el siguiente mensaje
 en respuesta:
 
-```
+``` html
 Hello World!
 ```
 
 También podemos hacer la petición en tipo json con curl, por ejemplo:
 
-```shell
+``` shell
 $ curl -H "Content-Type: application/json" -X GET http://localhost:4 000/
 Hello World!
 ```
 
 Verifica que en la salida estándar del servidor phoenix se registran las peticiones realizadas.
 
-```
+``` shell
 [info] GET /
 [debug] Processing with HelloWeb.IndexController.index/2
   Parameters: %{}
@@ -546,7 +547,7 @@ $ vim lib/hello_web/router.ex
 
 En el scope de `/api` agregamos el resource `/tasks`:
 
-```
+``` elixir
   scope "/api", HelloWeb do
     pipe_through :api
     resources "/tasks", TaskController, except: [:new, :edit]
