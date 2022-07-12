@@ -385,6 +385,20 @@ Finished in 0.04 seconds (0.04s async, 0.00s sync)
 2 tests, 0 failures
 ```
 
+**NOTA:** En otro momento hablaremos más de las pruebas.
+
+Antes de hacer commit a git con estos cambios recomiendo hacer una revisión de format usando `mix format`,
+este comando ejecuta una tarea de revisar la sintaxis de los archivos del proyecto, y también hace correcciones
+para mejorar la lectura y cumplir con las diferentes recomendaciones.
+
+``` shell
+$ mix format
+```
+
+Se aconseja que siempre que se edite un archivo, al guardar los cambios se haga mix format para validar y corregir,
+es bueno hacerse de este habito, también se pueden apoyar de plugins en los editores de texto ó en su IDE de
+preferencia.
+
 En otro momento hablaremos más de las pruebas.
 
 ## Haciendo commit a git
