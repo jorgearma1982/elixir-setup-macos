@@ -2,15 +2,20 @@
 
 ## Introducción
 
-Como ingenieros de infraestructura cada vez es más común participar en proyectos de entrega de software en donde el desarrollo se basa en el lenguaje de programación `Elixir`, el cual se basa en la máquina virtual de `Erlang`, es decir, la `BEAM`.
+Como ingenieros de infraestructura cada vez es más común participar en proyectos de entrega de software en donde el
+desarrollo se basa en el lenguaje de programación `Elixir`, el cual se basa en la máquina virtual de `Erlang`,
+es decir, la `BEAM`.
 
-En esta guía mostramos cómo construir proyectos basados en Elixir y Phoenix. Iremos desde lo más básico que es instalar las dependencias del sistema para poder crear nuestros proyectos, usaremos el manejador de paquetes `asdf` para simplificar el manejo de las versiones de `erlang` y `elixir` que vamos a necesitar.
+En esta guía mostramos cómo construir proyectos basados en Elixir y Phoenix. Iremos desde lo más básico que es
+instalar las dependencias del sistema para poder crear nuestros proyectos, usaremos el manejador de paquetes `asdf`
+para simplificar el manejo de las versiones de `erlang` y `elixir` que vamos a necesitar.
 
 En los ejercicios que realicemos usaremos Elixir `12` con Erlang/OTP `23`.
 
 ### Objetivos
 
-El principal interés es que los ingenieros de infraestructura aprendan los principios para construir proyectos basados en Elixir y que sea más sencillo participar en un proyecto de desarrollo basado en Elixir, al final esperamos:
+El principal interés es que los ingenieros de infraestructura aprendan los principios para construir proyectos
+basados en Elixir y que sea más sencillo participar en un proyecto de desarrollo basado en Elixir, al final esperamos:
 
 * Aprender a instalar Erlang y Elixir en modo binario
 * Aprender a crear proyectos basados en Elixir y el framework Phoenix
@@ -19,7 +24,9 @@ El principal interés es que los ingenieros de infraestructura aprendan los prin
 
 ## Requisitos
 
-Para poder realizar estos ejercicios es necesario tener una instancia del servidor de bases de datos Postgres, en MacOS puede ser instalado a través de la aplicación `Postgres.app`, con esta aplicación podrá crear diferentes instancias de bases de datos en diferentes versiones, lo cual facilita el desarrollo.
+Para poder realizar estos ejercicios es necesario tener una instancia del servidor de bases de datos Postgres,
+en MacOS puede ser instalado a través de la aplicación `Postgres.app`, con esta aplicación podrá crear diferentes
+instancias de bases de datos en diferentes versiones, lo cual facilita el desarrollo.
 
 Otra forma práctica de levantar un servidor de base de datos es a través de contenedores docker.
 
@@ -27,10 +34,49 @@ Para estos ejercicios usaremos Postgres versión `12`.
 
 ## Instalación del manejador de paquetes asdf
 
-Instalaremos algunas dependencias de sistema para hacer nuestro trabajo:
+Instalaremos algunas dependencias de herramientas sistema para hacer nuestro trabajo:
 
 ```shell
 $ brew install coreutils git curl unzip
+```
+
+Y también instalamos dependenciasd desarrollo:
+
+```shell
+$ brew install autoconf automake readline fop libyaml libxslt libtool unixodbc wxmac
+```
+
+Ahora debemos instalar versión `1.1` de `openssl`:
+
+```shell
+$ brew install openssl@1.1
+```
+
+Arreglamos los links:
+
+```shell
+$ brew unlink openssl@2
+$ brew unlink openssl@3
+$ brew link openssl@1.1
+```
+
+Agregamos el path de openssl:
+
+```shell
+$ vim $HOME/.zshrc
+```
+
+Al final del archivo agregamos:
+
+```shell
+# openssl@1.1 custom path
+export PATH="/opt/homebrew/opt/openssl@1.1/bin:$PATH"
+```
+
+Recargamos zsh:
+
+```shell
+$ source $HOME/.zshrc
 ```
 
 Ahora si instalamos asdf con brew:
@@ -74,11 +120,37 @@ $ asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
 $ asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
 ```
 
-Instalamos los plugins para `erlang` en su versión mayor `23` y la versión menor `3`:
+Instalamos `erlang` en su versión mayor `23` desde brew:
 
 ```shell
-$ asdf install erlang 23.3
+$ brew install erlang@23
 ```
+
+Agregamos el path de erlang al shell:
+
+```shell
+$ vim $HOME/.zshrc
+```
+
+Al final del archivo agregamos:
+
+```shell
+# erlang@23 custom path
+export PATH="/opt/homebrew/opt/erlang@23/bin:$PATH"
+export LDFLAGS="-L/opt/homebrew/opt/erlang@23/lib"
+```
+
+Recargamos el shell:
+
+```shell
+$ source $HOME/.zshrc
+```
+
+```shell
+$ mkdir ~/.asdf/installs
+$ cp -r /opt/homebrew/opt/erlang@23/lib/erlang ~/.asdf/installs/erlang/23.3.4.18
+$ asdf reshim erlang 23.3.4.18
+$ asdf global erlang 23.3.4.18
 
 Instalamos los plugins para `elixir` en versión mayor `1`, versión menor `12` y compatibilidad con erlang/otp `23`:
 
@@ -90,7 +162,7 @@ Verificamos la instalación de elixir:
 
 ```shell
 $ elixir --version
-Erlang/OTP 23 [erts-11.2] [source] [64-bit] [smp:8:8] [ds:8:8:10] [async-threads:1]
+Erlang/OTP 23 [erts-11.2.2.17] [source] [64-bit] [smp:8:8] [ds:8:8:10] [async-threads:1] [dtrace]
 
 Elixir 1.12.3 (compiled with Erlang/OTP 23)
 ```
@@ -157,7 +229,8 @@ Generated phx_new app
 Generated archive "phx_new-1.6.10.ez" with MIX_ENV=prod
 ```
 
-Generamos un proyecto Phoenix en el directorio `src`, la aplicación del proyecto se llama `hello` y desactivamos el uso de `html` ya que crearemos solo una API:
+Generamos un proyecto Phoenix en el directorio `src`, la aplicación del proyecto se llama `hello` y desactivamos
+el uso de `html` ya que crearemos solo una API:
 
 ```shell
 $ mix phx.new src --app hello --no-html --no-assets
@@ -220,7 +293,9 @@ Nos cambiamos al directorio `src` donde realizaremos las tareas:
 $ cd src
 ```
 
-Ya que nuestra aplicación será una API, debemos desactivar la visualización de errores en modo debug en formato HTML, para esto editamos `config/dev.exs` y en el `Endpoint` de `HelloWeb` cambiamos la llave `debug_errors` a `false`, por ejemplo:
+Ya que nuestra aplicación será una API, debemos desactivar la visualización de errores en modo debug en formato HTML,
+para esto editamos `config/dev.exs` y en el `Endpoint` de `HelloWeb` cambiamos la llave `debug_errors` a `false`,
+por ejemplo:
 
 ```elixir
 config :hello, HelloWeb.Endpoint,
@@ -282,9 +357,11 @@ hello_dev=# \dt
 Did not find any relations.
 ```
 
-Note que en el comando de arriba se listan las bases de datos default: `postgres`, `template0`, `template1`, `foo.lano` y la recién creada `hello_dev`.
+Note que en el comando de arriba se listan las bases de datos default: `postgres`, `template0`, `template1`,
+`foo.lano` y la recién creada `hello_dev`.
 
-Arriba también podemos notar que con el comando `\c hello_dev` nos podemos cambiar a esa base de datos, y el comando `\dt` se pueden listar las tablas.
+Arriba también podemos notar que con el comando `\c hello_dev` nos podemos cambiar a esa base de datos,
+y el comando `\dt` se pueden listar las tablas.
 
 Ahora sí estamos listos para correr el servidor Phoenix en local:
 
@@ -307,7 +384,15 @@ Deberás de visualizar un error como el siguiente:
 
 Esto es normal porque no se ha definido una ruta, en la siguiente sección se creará una ruta simple.
 
-Ahora que tenemos nuestro primer proyecto corriendo, es aconsejable dejar el servidor corriendo en primer plano para estar viendo como llegan las peticiones al servidor web que se levanta en el puerto `4000`.
+También puedes probar usando la línea de comandos con el comando `curl`, por ejemplo:
+
+```shell
+$ curl -H "Content-Type: application/json" -X GET http://localhost:4000/
+{"errors":{"detail":"Not Found"}}
+```
+
+Ahora que tenemos nuestro primer proyecto corriendo, es aconsejable dejar el servidor corriendo en primer plano
+para estar viendo como llegan las peticiones al servidor web que se levanta en el puerto `4000`.
 
 ### Modificando el endpoint index
 
@@ -325,8 +410,6 @@ Después de el pipeline `:api` y el scope `/api` definimos el scope `/`:
     get "/", IndexController, :index
   end
 ```
-
-***NOTA:*** El pipeline browser nos permite manejar peticiones en HTML.
 
 Ahora creamos el controlador para el índice en `lib/hello_web/controllers`:
 
@@ -365,8 +448,8 @@ Verifiquemos que en la salida estándar del servidor Phoenix se registran las pe
 [info] GET /
 [debug] Processing with HelloWeb.IndexController.index/2
   Parameters: %{}
-  Pipelines: [:browser]
-[info] Sent 200 in 926µs
+  Pipelines: [:api]
+[info] Sent 200 in 617µs
 ```
 
 Felicidades acabas de crear tu primer proyecto en elixir.
@@ -375,10 +458,18 @@ Si quieres ver un dashboard de la operación de Elixir nos dirigimos a la url: `
 
 ## Ejecutando las pruebas
 
+Preparamos ambiente test:
+
+```shell
+$ export MIX_ENV=test
+$ export DATABASE_URL=ecto://postgres:postgres@localhost/hello_test
+$ mix ecto.create
+```
+
 Cuando se crea un proyecto de Phoenix por default se incluyen unas pruebas, estas se pueden ejecutar así:
 
 ```shell
-$ MIX_ENV=test mix test
+$ mix test
 ..
 
 Finished in 0.04 seconds (0.04s async, 0.00s sync)
@@ -422,43 +513,65 @@ $ git commit -m "Initial commit for elixir phoenix api." src
 $ git push --set-upstream origin $(git_current_branch)
 ```
 
-## Cambiando las configuraciones para tiempo de construcción
+## Cambiando las configuraciones para tiempo de construcción y ejecución
 
-Ahora veremos un ejercicio en donde hacemos un poco más dinámica la página del índice de nuestra aplicación, cambiaremos un mensaje de su forma estática a una forma donde obtiene el valor desde un archivo de configuración en la aplicación.
-
-Volvemos a modificar la página de índice y agregamos la siguiente línea:
-
-```html
-<p>Message from: <strong><%= Application.fetch_env!(:hello, :myconfig) %></strong></p>
-```
-
-En el archivo de configuración `config/config.exs` que es procesado en tiempo de construcción agregamos una llave y su valor:
+Ahora vamos a cambiar la configuración para el ambiente test, en especial la configuración del repo, por default
+la configuración del repo está así:
 
 ```elixir
-config :hello, myconfig: "config!"
+# Configure your database
+#
+# The MIX_TEST_PARTITION environment variable can be used
+# to provide built-in test partitioning in CI environment.
+# Run `mix help test` for more information.
+config :hello, Hello.Repo,
+  username: "postgres",
+  password: "postgres",
+  hostname: "localhost",
+  database: "hello_test#{System.get_env("MIX_TEST_PARTITION")}",
+  pool: Ecto.Adapters.SQL.Sandbox,
+  pool_size: 10
 ```
 
-Guardamos la configuración, terminamos el servidor Phoenix y lo volvemos a ejecutar para que reconstruya el proyecto y verifiquemos si se refleja el cambio, deberíamos ver el siguiente mensaje:
+En esta configuración del repo se deben de definir los parámetros de conexión a la base de datos de forma
+independiente, es decir, un parámetro para el username, otro para el password, para el hostname, el nombre de
+la base de datos y el tamaño del pool de conexiones.
 
-```
-Message from: config!
-```
+Cambiamos ese bloque por algo así:
 
-Ahora definimos la llave en el archivo de configuración del ambiente de desarrollo `config/dev.exs`:
-
-```
-config :hello, myconfig: "dev!"
-```
-
-Guardamos la configuración y detenemos el servidor Phoenix, después volvemos a ejecutarlo para que se construya la nueva configuración, deberíamos ver el siguiente mensaje:
-
-```
-Message from: dev!
+```elixir
+# Configure your database
+#
+config :hello, Hello.Repo, pool: Ecto.Adapters.SQL.Sandbox
 ```
 
-Como podemos ver, las configuraciones y sus valores para construir el proyecto se pueden definir en el archivo `config/config.exs`, esto aplica de forma general (a cualquier ambiente) y es leído antes de que compilamos nuestra aplicación, incluso antes de cargar nuestras dependencias, esto ayuda a definir cómo vamos a compilar el proyecto.
+Aquí se puede ver que se quitan todos los parámetros, solo se deja el del pool, esto es porque dichos parámetros
+los definiremos en tiempo de ejecución.
 
-Si se quiere definir un parámetro específico para el ambiente de desarrollo se debe definir en `config/dev.exs`.
+
+En el archivo de `config/runtime.ex` eliminamos todas las configuraciones actuales y solo dejamos esto:
+
+```elixir
+import Config
+
+config :hello, Hello.Repo,
+  url: System.fetch_env!("DATABASE_URL"),
+  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "5")
+```
+
+Con esto definimos los parámetros de conexión a la base de datos en formato de url, es decir, en un format en donde
+en un solo string se define el usuario, la contraseña, el servidor y la base de datos, esto facilita la configuración
+tanto para el ambiente de pruebas como el de producción.
+
+En este caso, el valor de `url` lo obtendremos desde una variable de ambiente llamada `DATABASE_URL`, su valor
+sería algo así:
+
+```elixir
+ecto://postgres:postgres@localhost/hello_test
+```
+
+Adicionalmente, definimos el tamaño del pool por medio de una variable de ambiente llamada `POOL_SIZE`, a la cual
+se le asigna un valor default de `5`.
 
 ## Creando un endpoint para TODOs
 
@@ -558,13 +671,27 @@ $ curl -H "Content-Type: application/json" -X GET http://localhost:4000/api/task
 {"data":[{"completed":false,"description":"crear una API Elixir","id":1,"name":"diviértete jugando con Phoenix"}]}
 ```
 
-## Cambiando las configuraciones para tiempo de ejecución
-
-TODO.
-
 ## Haciendo liberaciones
 
 TODO.
+
+Estando en el directorio con el código fuente ejecutamos:
+
+```shell
+$ mix release.init
+* creating rel/vm.args.eex
+* creating rel/remote.vm.args.eex
+* creating rel/env.sh.eex
+* creating rel/env.bat.eex
+```
+
+Estos archivos son usado para crear inicializar los releases de las aplicaciones, eliminamos el archivo `bat` ya
+que no lo usaremos en la plataforma unix:
+
+```shell
+$ rm rel/env.bat.eex
+```
+
 
 ## Referencias
 
